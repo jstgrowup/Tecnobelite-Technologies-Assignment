@@ -1,17 +1,8 @@
-import generateAccessAndRefreshTokens from "../helpers/generateToken.js";
+import convertDate from "../helpers/dateConverter.helper.js";
 import { BookModel } from "../models/Book.model.js";
 import { CheckoutModel } from "../models/Checkout.model.js";
 import { UserModel } from "../models/User.model.js";
-import bcrypt from "bcrypt";
-import moment from "moment";
 
-const convertDate = (date) => {
-  try {
-    return moment(date, "DD/MM/YYYY").toDate();
-  } catch (error) {
-    console.log("error:", error);
-  }
-};
 const checkoutBook = async (req, res) => {
   try {
     const { bookId } = req.params;
@@ -35,7 +26,12 @@ const checkoutBook = async (req, res) => {
       ReturnDate: convertDate(ReturnDate),
       Status,
     });
-
+    if (!checkoutDetails) {
+      return res.status(201).json("Checkout unsuccefull");
+    }
+    await BookModel.findByIdAndUpdate(book._id, {
+      $inc: { AvailableCopies: -1 },
+    });
     return res.status(201).json(checkoutDetails);
   } catch (error) {
     console.log("error:", error);
@@ -69,4 +65,30 @@ const returnBook = async (req, res) => {
     return res.status(500).json("Server error");
   }
 };
-export { checkoutBook, returnBook };
+const getCheckouts = async (req, res) => {
+  try {
+    const allCheckoutData = await CheckoutModel.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "UserId",
+          foreignField: "_id",
+          as: "userDetail",
+        },
+      },
+      {
+        $lookup: {
+          from: "books",
+          localField: "BookId",
+          foreignField: "_id",
+          as: "bookDetail",
+        },
+      },
+    ]);
+    return res.status(201).json(allCheckoutData);
+  } catch (error) {
+    console.log("error:", error);
+    return res.status(500).json("Server error");
+  }
+};
+export { checkoutBook, returnBook, getCheckouts };

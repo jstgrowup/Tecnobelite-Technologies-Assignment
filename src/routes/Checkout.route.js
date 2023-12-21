@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   checkoutBook,
+  getCheckouts,
   returnBook,
 } from "../controllers/Checkout.controller.js";
 import { AuthMiddlewareForToken } from "../middlewares/auth.middleware.js";
@@ -12,5 +13,7 @@ checkoutRouter
 checkoutRouter
   .route("/library/checkout/return-book/:bookId")
   .post(AuthMiddlewareForToken, returnBook);
-
+checkoutRouter
+  .route("/library/checkout")
+  .get(AuthMiddlewareForToken, getCheckouts);
 export default checkoutRouter;

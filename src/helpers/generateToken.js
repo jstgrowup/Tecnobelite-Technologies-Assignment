@@ -8,12 +8,14 @@ const generateAccessAndRefreshTokens = async (userId) => {
     const accessToken = userInstance.generateAccessToken(
       { id: user._id, email: user.Email },
       (err, token) => {
+        if (err) return false;
         return token;
       }
     );
     const refreshToken = userInstance.generateRefreshToken(
       { id: user._id, email: user.Email },
       (err, token) => {
+        if (err) return false;
         return token;
       }
     );

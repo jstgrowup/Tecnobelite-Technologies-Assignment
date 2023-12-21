@@ -19,9 +19,7 @@ const signUp = async (req, res) => {
     if (foundUser) {
       return res.status(400).json("Account already exists with this Email");
     }
-
     const hash = await bcrypt.hash(password, 10);
-
     const user = await UserModel.create({
       Name,
       Email,
