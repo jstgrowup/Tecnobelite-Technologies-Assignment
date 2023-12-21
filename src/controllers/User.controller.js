@@ -1,7 +1,7 @@
 import generateAccessAndRefreshTokens from "../helpers/generateToken.js";
 import { UserModel } from "../models/User.model.js";
 import bcrypt from "bcrypt";
-import CryptoJS from "crypto-js";
+
 const checpass = async (password, user) => {
   try {
     return await bcrypt.compare(password, user.password);
@@ -11,7 +11,7 @@ const checpass = async (password, user) => {
 };
 const signUp = async (req, res) => {
   try {
-    const { Email, password, Name } = req.body;
+    const { Email, password, Name,Role } = req.body;
     if (!Email || !password) {
       return res.status(400).json("Email and password is required");
     }
@@ -24,6 +24,7 @@ const signUp = async (req, res) => {
       Name,
       Email,
       password: hash,
+      Role
     });
     if (!user) {
       return res.status(400).json("Something went wrong in user creation");
