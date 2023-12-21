@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
-import connect from "./db/db";
-import app from "./app";
+import connect from "./db/db.js";
+import app from "./app.js";
+const port = process.env.PORT || 3000;
+
 connect()
   .then(() => {
     app.listen(port, () => {

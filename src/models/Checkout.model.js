@@ -19,6 +19,7 @@ const CheckoutSchema = new Schema({
   LateReturedFine: {
     type: Number,
     required: true,
+    default: 0,
   },
   Status: {
     type: String,
